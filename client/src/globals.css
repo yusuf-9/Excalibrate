@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  :root {
+      --primary: 242, 242, 242;
+      --primary-light: 255, 255, 255;
+      --primary-dark: 217, 217, 217;
+  
+      --contrast: 30, 31, 34;
+      --contrast-light: 49, 51, 56;
+      --contrast-dark: 0, 0, 0;
+
+      --accent: 168, 165, 255;
+      --accent-dark: 106, 100, 218;
+      --accent-darker: 80, 90, 200;
+  }
+
+  .dark {
+    --primary: 30, 31, 34;
+    --primary-light: 49, 51, 56;
+    --primary-dark: 0, 0, 0;
+
+    --contrast: 242, 242, 242;
+    --contrast-light: 255, 255, 255;
+    --contrast-dark: 217, 217, 217;
+  }
+}
+
+body {
+  @apply h-screen w-screen overflow-hidden
+}
