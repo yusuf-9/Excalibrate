@@ -48,7 +48,6 @@ const ConferenceModal = forwardRef(
       onPanEnd,
       handleDockModal,
       handleUndockModal,
-      handleCloseModal,
       ...modalProps
     } = props;
 
@@ -89,10 +88,6 @@ const ConferenceModal = forwardRef(
               onClick={handleDockModal}
             />
           )}
-          <TbWindowMinimize
-            className="absolute z-[1600] right-5 top-0 m-2 cursor-pointer h-5 w-5"
-            onClick={handleCloseModal}
-          />
         </>
       ),
       [
@@ -102,7 +97,6 @@ const ConferenceModal = forwardRef(
         onPanStart,
         onPan,
         onPanEnd,
-        handleCloseModal,
       ]
     );
 

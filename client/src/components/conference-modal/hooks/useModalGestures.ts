@@ -23,7 +23,7 @@ export const useModalGestures = ({
   const animationControls = useAnimationControls();
 
   // init motion values
-  const widthMotionValue = useMotionValue(900);
+  const widthMotionValue = useMotionValue(1100);
   const heightMotionValue = useMotionValue(700);
   const width = useTransform(
     widthMotionValue,
@@ -45,7 +45,7 @@ export const useModalGestures = ({
   // event handlers -------------------------------------------------------------------------------------------------
 
   const onPanStart = useCallback(
-    (e: any) => {
+    (e: any, info: any) => {
       e.stopPropagation();
       e.preventDefault();
       initialDims.current = {
@@ -101,7 +101,7 @@ export const useModalGestures = ({
     const modal = modalRefs.current?.modal;
     const { top, left } = getOffsets(modalContainer, modal);
     animationControls.start({
-      x: left - 300,
+      x: left - 400,
       y: top - 200,
       width: 300,
       height: 300,
@@ -123,12 +123,12 @@ export const useModalGestures = ({
     animationControls.start({
       x: 0,
       y: 0,
-      width: 900,
+      width: 1100,
       height: 700,
       transition: { duration: 0.5, bounce: 1 },
     });
     initialDims.current = {
-      width: 900,
+      width: 1100,
       height: 700,
       isResizing: false,
     };
