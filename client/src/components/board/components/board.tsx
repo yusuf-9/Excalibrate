@@ -1,7 +1,8 @@
-// components
 import { Excalidraw, WelcomeScreen } from "@excalidraw/excalidraw";
-import ChatboxSidebar from "@/components/chatbox";
 import { ExcalidrawProps } from "@excalidraw/excalidraw/types/types";
+
+// components
+import ChatboxSidebar from "@/components/chatbox";
 
 const Board = (props: ExcalidrawProps) => {
   return (

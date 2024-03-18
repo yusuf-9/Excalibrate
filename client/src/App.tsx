@@ -2,21 +2,22 @@
 import AppRouter from "@/router";
 import { BrowserRouter as Router } from "react-router-dom";
 
-// providers
-import StoreProvider from "@/providers/store";
-import SocketProvider from "@/providers/socket";
-import UserProvider from "@/providers/user";
+import { RecoilRoot } from "recoil";
+
+// contexts
+import SocketProvider from "@/contexts/socket";
+import UserProvider from "@/contexts/user";
 
 function App() {
   return (
     <Router>
-      <StoreProvider>
+      <RecoilRoot>
         <SocketProvider>
           <UserProvider>
             <AppRouter />
           </UserProvider>
         </SocketProvider>
-      </StoreProvider>
+      </RecoilRoot>
     </Router>
   );
 }

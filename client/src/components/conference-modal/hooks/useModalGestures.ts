@@ -1,29 +1,23 @@
 import { useCallback, useRef } from "react";
-import { useAnimationControls, useDragControls, useMotionValue, useTransform } from "framer-motion";
-
-// components
-import ConferenceModal from "./gestures-modal";
+import {
+  useAnimationControls,
+  useDragControls,
+  useMotionValue,
+  useTransform,
+} from "framer-motion";
 
 // utils
 import { getOffsets } from "@/utils";
 
 // types
-import { SetterOrUpdater } from "recoil";
+import { ModalpropTypes } from "../components";
 
-type props = {
-  modalState: {
-    open: boolean;
-    docked: boolean;
-  };
-  setModalState: SetterOrUpdater<{
-    open: boolean;
-    docked: boolean;
-  }>;
-};
-
-const ModalGesturesContainer = ({ modalState, setModalState }: props) => {
+export const useModalGestures = ({
+  modalState,
+  setModalState,
+}: ModalpropTypes) => {
   // init state ------------------------------------------------------------------------------------------------------
-  
+
   // init drag and animation controls
   const dragControls = useDragControls();
   const animationControls = useAnimationControls();
@@ -31,12 +25,22 @@ const ModalGesturesContainer = ({ modalState, setModalState }: props) => {
   // init motion values
   const widthMotionValue = useMotionValue(900);
   const heightMotionValue = useMotionValue(700);
-  const width = useTransform(widthMotionValue, latest => `${latest}px`);
-  const height = useTransform(heightMotionValue, latest => `${latest}px`);
+  const width = useTransform(
+    widthMotionValue,
+    latest => `${latest}px`
+  );
+  const height = useTransform(
+    heightMotionValue,
+    latest => `${latest}px`
+  );
 
   // init refs
   const modalRefs = useRef<any>(null);
-  const initialDims = useRef({ width: widthMotionValue.get(), height: heightMotionValue.get(), isResizing: false });
+  const initialDims = useRef({
+    width: widthMotionValue.get(),
+    height: heightMotionValue.get(),
+    isResizing: false,
+  });
 
   // event handlers -------------------------------------------------------------------------------------------------
 
@@ -57,14 +61,18 @@ const ModalGesturesContainer = ({ modalState, setModalState }: props) => {
     (e: any, info: any) => {
       e.stopPropagation();
       e.preventDefault();
-      widthMotionValue.set(initialDims.current.width + info.offset.x);
-      heightMotionValue.set(initialDims.current.height + info.offset.y);
+      widthMotionValue.set(
+        initialDims.current.width + info.offset.x
+      );
+      heightMotionValue.set(
+        initialDims.current.height + info.offset.y
+      );
     },
     [widthMotionValue, heightMotionValue]
   );
 
   const onPanEnd = useCallback(
-    (e: any, info: any) =>
+    () =>
       (initialDims.current = {
         width: widthMotionValue.get(),
         height: heightMotionValue.get(),
@@ -74,7 +82,7 @@ const ModalGesturesContainer = ({ modalState, setModalState }: props) => {
   );
 
   const handleDrag = useCallback(
-    (e: any, info?: any) => {
+    (e: any) => {
       if (!e.target.closest(".no-drag")) {
         dragControls.start(e);
       }
@@ -83,11 +91,22 @@ const ModalGesturesContainer = ({ modalState, setModalState }: props) => {
   );
 
   const handleDockModal = useCallback(() => {
-    setModalState({ ...modalState, open: true, docked: true });
-    const modalContainer = modalRefs.current?.modalContainer;
+    setModalState({
+      ...modalState,
+      open: true,
+      docked: true,
+    });
+    const modalContainer =
+      modalRefs.current?.modalContainer;
     const modal = modalRefs.current?.modal;
     const { top, left } = getOffsets(modalContainer, modal);
-    animationControls.start({ x: left - 300, y: top - 200, width: 300, height: 300, transition: { duration: 0.5, bounce: 1 } });
+    animationControls.start({
+      x: left - 300,
+      y: top - 200,
+      width: 300,
+      height: 300,
+      transition: { duration: 0.5, bounce: 1 },
+    });
     initialDims.current = {
       width: 300,
       height: 300,
@@ -96,8 +115,18 @@ const ModalGesturesContainer = ({ modalState, setModalState }: props) => {
   }, [modalState, setModalState, animationControls]);
 
   const handleUndockModal = useCallback(() => {
-    setModalState({ ...modalState, open: true, docked: false });
-    animationControls.start({ x: 0, y: 0, width: 900, height: 700, transition: { duration: 0.5, bounce: 1 } });
+    setModalState({
+      ...modalState,
+      open: true,
+      docked: false,
+    });
+    animationControls.start({
+      x: 0,
+      y: 0,
+      width: 900,
+      height: 700,
+      transition: { duration: 0.5, bounce: 1 },
+    });
     initialDims.current = {
       width: 900,
       height: 700,
@@ -106,24 +135,18 @@ const ModalGesturesContainer = ({ modalState, setModalState }: props) => {
   }, [modalState, setModalState, animationControls]);
 
   const handleCloseModal = useCallback(() => {
-    setModalState(prev => ({ ...prev, open: false, docked: false }));
+    setModalState((prev: any) => ({
+      ...prev,
+      open: false,
+      docked: false,
+    }));
   }, [setModalState]);
 
-  // render ----------------------------------------------------------------------------------------------------------
-
-  const modalProps = {
+  return {
     width,
     height,
     dragControls,
-    docked: modalState.docked,
     animationControls,
-    drag: true,
-    dragListener: false,
-    animate: animationControls,
-    dragMomentum: false,
-    dragSnapToOrigin: modalState.docked ? false : true,
-    dragConstraints: modalState.docked ? modalRefs?.current?.modalContainer : false,
-    dragElastic: 0.7,
     onPanStart,
     onPan,
     onPanEnd,
@@ -131,12 +154,6 @@ const ModalGesturesContainer = ({ modalState, setModalState }: props) => {
     handleDockModal,
     handleUndockModal,
     handleCloseModal,
-    onMouseDown: handleDrag,
-    onTouchStart: handleDrag,
-    ref: modalRefs,
-  };
-
-  return <ConferenceModal {...modalProps} />;
+    modalRefs
+  }
 };
-
-export default ModalGesturesContainer;

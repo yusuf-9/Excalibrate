@@ -1,12 +1,12 @@
 import { useContext } from "react";
 
-// providers
-import { SocketContext } from "@/providers/socket";
+// contexts
+import { SocketContext } from "@/contexts/socket";
 
 export const useSocket = () => {
-  const { socket } = useContext(SocketContext);
+  const { ...rest } = useContext(SocketContext);
 
   return {
-    socket,
+    ...rest
   };
 };

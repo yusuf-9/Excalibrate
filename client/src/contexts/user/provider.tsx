@@ -1,6 +1,9 @@
-import React, { createContext, useCallback, useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
+
+// context
+import { UserContext } from "./context";
 
 // Hooks
 import { useSocket } from "@/hooks/useSocket";
@@ -9,21 +12,7 @@ import { useStore } from "@/hooks/useStore";
 // Types
 import { UserType } from "@/types/store";
 import { messageType } from "@/types/chat";
-
-// context values type
-interface UserContextProps {
-  user: UserType | null;
-  collaborators: UserType[];
-  handleJoinRoom: (data: { name: string; roomId?: string }) => void;
-}
-
-export const UserContext = createContext<UserContextProps>({
-  user: null,
-  collaborators: [],
-  handleJoinRoom: () => {},
-});
-
-type UserProviderProps = { children: React.ReactNode };
+import { UserProviderProps } from "./types";
 
 // Create the provider component
 const UserProvider = ({ children }: UserProviderProps) => {
@@ -67,7 +56,7 @@ const UserProvider = ({ children }: UserProviderProps) => {
 
   const handleJoinRoom = useCallback(
     (data: { name: string; roomId?: string }) => {
-      console.log("joining room")
+      console.log("joining room");
       socket?.emit("join-room", data);
     },
     [socket]
