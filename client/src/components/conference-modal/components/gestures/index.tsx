@@ -1,5 +1,5 @@
 // components
-import ConferenceModal from "./gestures-modal";
+import ConferenceModal from "./component";
 
 // types
 import { SetterOrUpdater } from "recoil";

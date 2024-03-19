@@ -25,7 +25,9 @@ const ConferenceModal = ({
       modalState={modalState}
       setModalState={setModalState}
     >
-      <ModalConference />
+      <ModalConference 
+        isModalDocked={modalState.docked}
+      />
     </ModalGestures>
   );
 };

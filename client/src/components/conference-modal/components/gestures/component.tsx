@@ -69,7 +69,7 @@ const ConferenceModal = forwardRef(
           {docked && (
             <>
               <ImEnlarge
-                className="absolute z-[1600] right-0 top-0 m-2 cursor-pointer h-4 w-4"
+                className="absolute z-[1600] right-0 top-0 m-2 cursor-pointer h-4 w-4 text-contrast"
                 onClick={handleUndockModal}
               />
               <motion.div
@@ -78,13 +78,13 @@ const ConferenceModal = forwardRef(
                 onPanEnd={onPanEnd}
                 className="z-[1600] absolute right-2 bottom-2 cursor-pointer no-drag"
               >
-                <IoMdResize className="-rotate-90 h-4 w-4 no-drag" />
+                <IoMdResize className="-rotate-90 h-4 w-4 no-drag text-contrast" />
               </motion.div>
             </>
           )}
           {!docked && (
             <TbWindowMinimize
-              className="absolute z-[1600] right-0 top-0 m-2 cursor-pointer h-5 w-5"
+              className="absolute z-[1600] right-0 top-0 m-2 cursor-pointer h-5 w-5 text-contrast"
               onClick={handleDockModal}
             />
           )}
@@ -113,7 +113,7 @@ const ConferenceModal = forwardRef(
         <motion.div
           ref={modalRef}
           style={{ touchAction: "none", width, height }}
-          className="p-10 rounded-xl shadow-lg bg-white z-[1500] opacity-100 pointer-events-auto relative"
+          className="p-10 rounded-xl shadow-lg bg-primary-light z-[1500] opacity-100 pointer-events-auto relative"
           {...modalProps}
         >
           {children}

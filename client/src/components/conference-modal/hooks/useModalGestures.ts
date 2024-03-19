@@ -6,6 +6,9 @@ import {
   useTransform,
 } from "framer-motion";
 
+// hooks
+import { useWindowDimensions } from "@/hooks/useWindowDimensions"
+
 // utils
 import { getOffsets } from "@/utils";
 
@@ -16,15 +19,28 @@ export const useModalGestures = ({
   modalState,
   setModalState,
 }: ModalpropTypes) => {
+
+
   // init state ------------------------------------------------------------------------------------------------------
+
+  // get window dimensions
+  const windowDimensions = useWindowDimensions();
+
+  // get initials modal dimensions
+  const initialModalWidth = windowDimensions?.width > 1100 ? 1100 : 700
+  const initialModalHeight = windowDimensions?.height > 700 ? 700 : 400
 
   // init drag and animation controls
   const dragControls = useDragControls();
   const animationControls = useAnimationControls();
 
   // init motion values
-  const widthMotionValue = useMotionValue(1100);
-  const heightMotionValue = useMotionValue(700);
+  const widthMotionValue = useMotionValue(
+    initialModalWidth
+  );
+  const heightMotionValue = useMotionValue(
+    initialModalHeight
+  );
   const width = useTransform(
     widthMotionValue,
     latest => `${latest}px`
@@ -61,12 +77,14 @@ export const useModalGestures = ({
     (e: any, info: any) => {
       e.stopPropagation();
       e.preventDefault();
-      widthMotionValue.set(
-        initialDims.current.width + info.offset.x
-      );
-      heightMotionValue.set(
-        initialDims.current.height + info.offset.y
-      );
+      const newWidth = initialDims.current.width + info.offset.x
+      const newHeight = initialDims.current.height + info.offset.y
+      if(newWidth >= 300) {
+        widthMotionValue.set(initialDims.current.width + info.offset.x);
+      }
+      if(newHeight >= 300) {
+        heightMotionValue.set(initialDims.current.height + info.offset.y);
+      }
     },
     [widthMotionValue, heightMotionValue]
   );
@@ -123,16 +141,16 @@ export const useModalGestures = ({
     animationControls.start({
       x: 0,
       y: 0,
-      width: 1100,
-      height: 700,
+      width: initialModalWidth,
+      height: initialModalHeight,
       transition: { duration: 0.5, bounce: 1 },
     });
     initialDims.current = {
-      width: 1100,
-      height: 700,
+      width: initialModalWidth,
+      height: initialModalHeight,
       isResizing: false,
     };
-  }, [modalState, setModalState, animationControls]);
+  }, [setModalState, modalState, animationControls, initialModalWidth, initialModalHeight]);
 
   const handleCloseModal = useCallback(() => {
     setModalState((prev: any) => ({
