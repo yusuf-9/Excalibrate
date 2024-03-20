@@ -1,29 +1,32 @@
 class Microphone {
     private audioContext: AudioContext;
-    private analyser: AnalyserNode;
-    private microhpone: MediaStreamAudioSourceNode;
-    dataArray: Uint8Array;
-
-    constructor(stream: MediaStream) {
-        this.audioContext = new AudioContext();
-        this.microhpone = this.audioContext.createMediaStreamSource(stream);
-        this.analyser = this.audioContext.createAnalyser();
-        this.analyser.fftSize = 512;
-        const bufferLength = this.analyser.frequencyBinCount
-        this.dataArray = new Uint8Array(bufferLength);
-        this.microhpone.connect(this.analyser);
+    private analyserNode: AnalyserNode;
+    private scriptNode: ScriptProcessorNode;
+    private stream: MediaStream;
+    private handleMicrophoneInput: (event: AudioProcessingEvent) => void;
+  
+    constructor(stream: MediaStream, handleMicrophoneInput: (event: AudioProcessingEvent) => void) {
+      this.audioContext = new AudioContext();
+      this.analyserNode = this.audioContext.createAnalyser();
+      this.scriptNode = this.audioContext.createScriptProcessor(4096, 1, 1);
+      this.stream = stream;
+      this.handleMicrophoneInput = handleMicrophoneInput;
+  
+      this.setup();
     }
-
-    public getSamples(): Uint8Array {
-        this.analyser.getByteFrequencyData(this.dataArray);
-        return this.dataArray;
+  
+    private setup(): void {
+      const microphone = this.audioContext.createMediaStreamSource(this.stream);
+      microphone.connect(this.analyserNode);
+      this.analyserNode.connect(this.scriptNode);
+      this.scriptNode.connect(this.audioContext.destination);
+      this.scriptNode.onaudioprocess = this.handleMicrophoneInput;
     }
-
-    public getVolume(): number {
-        const samples = this.getSamples();
-        const volume = samples.reduce((sum, value) => sum + value, 0) / samples.length;
-        return volume;
+  
+    public close(): void {
+      this.audioContext.close();
     }
-}
-
-export default Microphone;
+  }
+  
+  export default Microphone;
+  

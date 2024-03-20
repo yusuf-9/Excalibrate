@@ -9,7 +9,6 @@ function ConferenceActions() {
       transition={{ duration: 0.5, delay: 0.1 }}
       className="w-full flex gap-5 justify-center items-center -mb-5"
     >
-      <button className="bg-accent text-white p-2 rounded-md">Call</button>
       <button className="bg-red-800 text-white p-2 rounded-md">End</button>
       <button className="bg-gray-600 text-white p-2 rounded-md">Mute</button>
       <button className="bg-green-500 text-white p-2 rounded-md">Hide Video</button>

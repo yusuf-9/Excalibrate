@@ -1,26 +1,33 @@
-import { useState } from "react";
-import { ConferenceRoom, ConferenceActions } from "./components";
+// components
+import { ConferenceActions, JoinRoom } from "./components"
+import ConferenceRoom from "@/components/conference-room"
+
+// hooks
+import { useConference } from "../../hooks/useConference";
 
 // types
 type Props = {
-  isModalDocked: boolean
-}
+  isModalDocked: boolean;
+};
 
 function ConferenceContainer(props: Props) {
   const { isModalDocked } = props;
 
-  const [participants, setParticipants] = useState([1, 2, 3, 4, 5, 6]);
+  const { participants, collaborators, socket, setParticipants, handleCall } = useConference();
 
   const shouldRenderActions = participants?.length && !isModalDocked;
 
   return (
     <main className="flex flex-col h-full gap-5">
-      <ConferenceRoom
-        participants={participants}
-        setParticipants={setParticipants}
-        renderOnlyUserStream={isModalDocked}
+      {!participants?.length && <JoinRoom onClick={handleCall} />}
+      {!!participants?.length && (
+        <ConferenceRoom
+          participants={participants}
+          setParticipants={setParticipants}
+          renderOnlyUserStream={isModalDocked}
         />
-      {shouldRenderActions && <ConferenceActions /> }
+      )}
+      {!!shouldRenderActions && <ConferenceActions />}
     </main>
   );
 }

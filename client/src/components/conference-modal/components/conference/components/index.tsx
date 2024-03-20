@@ -1,7 +1,7 @@
 import ConferenceActions from "./actions";
-import ConferenceRoom from "./room";
+import JoinRoom from "./join-room";
 
 export {
     ConferenceActions,
-    ConferenceRoom
+    JoinRoom
 }
