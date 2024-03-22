@@ -25,6 +25,7 @@ function ConferenceContainer(props: Props) {
           participants={participants}
           setParticipants={setParticipants}
           renderOnlyUserStream={isModalDocked}
+          localSocketId={socket?.id}
         />
       )}
       {!!shouldRenderActions && <ConferenceActions />}

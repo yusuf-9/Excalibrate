@@ -11,6 +11,7 @@ type Props = {
   color: string;
   name: string;
   stream: MediaStream;
+  outputAudio: boolean;
 };
 
 // constants
@@ -18,9 +19,10 @@ const AVATAR_WIDTH = 128;
 const AVATAR_HEIGHT = 128;
 
 function AudioPlayer(props: Props) {
-  const { color, name, stream } = props;
+  const { color, name, stream, outputAudio } = props;
 
   const pulsatorEl = useRef<HTMLDivElement>(null);
+  const audioOutputEl = useRef<HTMLAudioElement>(null);
 
   const handleMicrophoneVolumeChange = useThrottledCallback((event: AudioProcessingEvent) => {
     const buffer = event.inputBuffer.getChannelData(0);
@@ -35,6 +37,8 @@ function AudioPlayer(props: Props) {
 
   useEffect(() => {
     const microphone: Microphone = new Microphone(stream, handleMicrophoneVolumeChange);
+
+    if(audioOutputEl.current) audioOutputEl.current.srcObject = stream;
     return () => {
       microphone.close();
     };
@@ -42,6 +46,7 @@ function AudioPlayer(props: Props) {
 
   return (
     <>
+    <audio autoPlay={true} controls={false} ref={audioOutputEl}></audio>
       <div
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 transition-all rounded-full bg-gray-400 opacity-50 border border-white"
         style={{
@@ -58,7 +63,7 @@ function AudioPlayer(props: Props) {
           height: AVATAR_HEIGHT,
         }}
       >
-        <h3 className="text-[60px] pb-2">{name}</h3>
+        <h3 className="text-[60px] pb-2 uppercase">{name}</h3>
       </div>
     </>
   );

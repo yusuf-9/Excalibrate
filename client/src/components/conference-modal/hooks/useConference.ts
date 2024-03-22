@@ -38,6 +38,8 @@ export const useConference = () => {
     }
   }, [user?.name, user?.socketId]);
 
+
+
   return {
     participants,
     collaborators,

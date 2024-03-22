@@ -8,7 +8,7 @@ class Microphone {
     constructor(stream: MediaStream, handleMicrophoneInput: (event: AudioProcessingEvent) => void) {
       this.audioContext = new AudioContext();
       this.analyserNode = this.audioContext.createAnalyser();
-      this.scriptNode = this.audioContext.createScriptProcessor(4096, 1, 1);
+      this.scriptNode = this.audioContext.createScriptProcessor(16384, 1, 1);
       this.stream = stream;
       this.handleMicrophoneInput = handleMicrophoneInput;
   
