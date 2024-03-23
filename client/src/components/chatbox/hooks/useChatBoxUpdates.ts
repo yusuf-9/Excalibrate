@@ -20,12 +20,12 @@ export const useChatBoxUpdates = ({
   }, [setIsChatDrawerDocked]);
 
   useEffect(() => {
-    socket?.on("message-recieved", (message: messageType) => {
+    socket?.on("message-received", (message: messageType) => {
         setMessages((prev: any) => [...prev, message]);
     });
 
     return () => {
-      socket?.off("message-recieved");
+      socket?.off("message-received");
     };
   }, [socket, setMessages]);
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 
@@ -19,7 +19,8 @@ const UserProvider = ({ children }: UserProviderProps) => {
   // router
   const navigate = useNavigate();
 
-  // Store
+  // state
+  const [roomId, setRoomId] = useState("");
   const { userAtom, collaboratersAtom } = useStore();
   const [user, setUser] = useRecoilState(userAtom);
   const [collaboraters, setCollaboraters] = useRecoilState(collaboratersAtom);
@@ -28,12 +29,17 @@ const UserProvider = ({ children }: UserProviderProps) => {
   const { socket } = useSocket();
 
   useEffect(() => {
-    socket?.on("new-user-joined-room", (data: UserType) => {
-      setCollaboraters(prev => [...prev, data]);
-    });
+    socket?.on("joined-room", ([users, newRoomId]: [UserType[], string]) => {
+      users?.forEach(connectedUser => {
+        if (connectedUser?.socketId === socket?.id) {
+          if (!user) setUser(connectedUser);
+        } else setCollaboraters(prev => [...prev, connectedUser]);
+      });
 
-    socket?.on("user-joined-room", (data: UserType) => {
-      setUser(data);
+      if (!roomId) {
+        setRoomId(newRoomId);
+        navigate(`/${newRoomId}`);
+      }
     });
 
     socket?.on("chat-history", (data: messageType[]) => {
@@ -43,16 +49,10 @@ const UserProvider = ({ children }: UserProviderProps) => {
 
     // Clean up the socket connection on component unmount
     return () => {
-      socket?.off("new-user-joined-room");
-      socket?.off("user-joined-room");
+      socket?.off("joined-room");
       socket?.off("chat-history");
     };
-  }, [setCollaboraters, setUser, socket]);
-
-  useEffect(() => {
-    if (!user) return;
-    navigate(`/${user?.roomId}`);
-  }, [user, navigate]);
+  }, [navigate, roomId, setCollaboraters, setUser, socket, user]);
 
   const handleJoinRoom = useCallback(
     (data: { name: string; roomId?: string }) => {
@@ -63,8 +63,7 @@ const UserProvider = ({ children }: UserProviderProps) => {
   );
 
   return (
-    <UserContext.Provider
-      value={{ user, collaborators: collaboraters, handleJoinRoom }}>
+    <UserContext.Provider value={{ user, collaborators: collaboraters, handleJoinRoom }}>
       {children}
     </UserContext.Provider>
   );

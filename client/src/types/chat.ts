@@ -1,6 +1,5 @@
 export type messageType = {
-    author: string;
-    message: string;
-    authorId: string;
-  }
-  
+  socketId: string;
+  content: string;
+  timestamp: number;
+};

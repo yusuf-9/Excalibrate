@@ -12,6 +12,7 @@ const ChatboxContainer = () => {
     socket,
     user,
     messages,
+    collaborators,
     setIsChatDrawerDocked,
     setMessages,
     setModalState,
@@ -32,6 +33,7 @@ const ChatboxContainer = () => {
       onDock={dockSidebar}
       messages={messages}
       userId={user?.socketId}
+      collaborators={collaborators}
       title="Chats"
       openConferenceModal={() =>
         setModalState(prev => ({

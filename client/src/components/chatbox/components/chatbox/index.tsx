@@ -10,6 +10,7 @@ import { FaVideo } from "react-icons/fa6";
 
 // types
 import { messageType } from "@/types/chat";
+import { UserType } from "@/types/store";
 
 export type chatboxProps = {
   open: boolean;
@@ -18,6 +19,7 @@ export type chatboxProps = {
   messages: messageType[];
   userId: string | undefined;
   title: string;
+  collaborators: UserType[]
   handleSubmitMessage: (message: string) => void;
 };
 
