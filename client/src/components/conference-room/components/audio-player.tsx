@@ -30,8 +30,8 @@ function AudioPlayer(props: Props) {
     const pulsatingFactor = sum / buffer.length;
 
     if (pulsatorEl.current) {
-      pulsatorEl.current.style.width = AVATAR_WIDTH + pulsatingFactor * 800 + "px";
-      pulsatorEl.current.style.height = AVATAR_HEIGHT + pulsatingFactor * 800 + "px";
+      pulsatorEl.current.style.width = AVATAR_WIDTH + pulsatingFactor * 500 + "px";
+      pulsatorEl.current.style.height = AVATAR_HEIGHT + pulsatingFactor * 500 + "px";
     }
   }, 100);
 
