@@ -30,23 +30,27 @@ function AudioPlayer(props: Props) {
     const pulsatingFactor = sum / buffer.length;
 
     if (pulsatorEl.current) {
-      pulsatorEl.current.style.width = AVATAR_WIDTH + pulsatingFactor * 500 + "px";
-      pulsatorEl.current.style.height = AVATAR_HEIGHT + pulsatingFactor * 500 + "px";
+      pulsatorEl.current.style.width = AVATAR_WIDTH + pulsatingFactor * 800 + "px";
+      pulsatorEl.current.style.height = AVATAR_HEIGHT + pulsatingFactor * 800 + "px";
     }
   }, 100);
 
   useEffect(() => {
     const microphone: Microphone = new Microphone(stream, handleMicrophoneVolumeChange);
 
-    if(audioOutputEl.current) audioOutputEl.current.srcObject = stream;
+    if (audioOutputEl.current && outputAudio) audioOutputEl.current.srcObject = stream;
     return () => {
       microphone.close();
     };
-  }, [handleMicrophoneVolumeChange, stream]);
+  }, [handleMicrophoneVolumeChange, stream, outputAudio]);
 
   return (
     <>
-    <audio autoPlay={true} controls={false} ref={audioOutputEl}></audio>
+      <audio
+        autoPlay={true}
+        controls={false}
+        ref={audioOutputEl}
+      ></audio>
       <div
         className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 transition-all rounded-full bg-gray-400 opacity-50 border border-white"
         style={{

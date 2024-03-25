@@ -19,7 +19,7 @@ function StreamPlayer(props: Props) {
   const avatarName = name?.split(' ')?.[0]?.[0] + (name?.split(' ')?.[1]?.[0] || '')
 
   return (
-    <div className={`w-full h-full col-span-1 flex justify-center items-center rounded-xl bg-gray-600 text-white`}>
+    <div className={`w-full h-full col-span-1 flex justify-center items-center rounded-xl bg-gray-600 text-white relative`}>
       {streamType === "audio" && (
         <AudioPlayer 
           color={color}

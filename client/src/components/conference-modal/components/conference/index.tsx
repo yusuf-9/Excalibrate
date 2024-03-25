@@ -13,13 +13,13 @@ type Props = {
 function ConferenceContainer(props: Props) {
   const { isModalDocked } = props;
 
-  const { participants, collaborators, socket, setParticipants, handleCall } = useConference();
+  const { participants, collaborators, socket, setParticipants, handleConnectPeer } = useConference();
 
   const shouldRenderActions = participants?.length && !isModalDocked;
 
   return (
     <main className="flex flex-col h-full gap-5">
-      {!participants?.length && <JoinRoom onClick={handleCall} />}
+      {!participants?.length && <JoinRoom onClick={handleConnectPeer} />}
       {!!participants?.length && (
         <ConferenceRoom
           participants={participants}

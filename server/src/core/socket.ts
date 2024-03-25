@@ -13,7 +13,7 @@ class SocketEvents {
     this.socket = socket;
   }
 
-  handleJoinRoom({ name, roomId }: { name: string; roomId?: string }) {
+  private handleJoinRoom({ name, roomId }: { name: string; roomId?: string }) {
     const newRoomId = roomId ?? v4();
     this.createRoom(newRoomId);
 
@@ -30,7 +30,7 @@ class SocketEvents {
     this.socket.emit("chat-history", roomChatMessages);
   }
 
-  handleRecieveMessage({ message }: { message: string }) {
+  private handleRecieveMessage({ message }: { message: string }) {
     const messagePayload = {
       content: message,
       socketId: this.socket?.id,
@@ -44,17 +44,32 @@ class SocketEvents {
     this.io.to(room.id).emit("message-received", messagePayload);
   }
 
-  handleSocketDisconnect() {
+  private handleSocketDisconnect() {
     const room = this.getUserRoom(this.socket?.id);
     if (!room) return;
 
-    const newConnectionList = Array.from(store[room.id].connections)?.filter(user => user.socketId !== this.socket?.id);
-    if(!newConnectionList?.length) {
-        return this.deleteRoom(room.id);
-    }
+    this.removeUserFromRoom(room.id)
 
-    store[room.id].connections = new Set(newConnectionList);
     this.socket.leave(room.id);
+  }
+
+  private handleConnectPeer(peerId: string, ack: Function){
+    const room = this.getUserRoom(this.socket?.id);
+    if (!room) return;
+
+    store[room.id].conferenceMembers.add({
+      peerId,
+      socketId: this.socket?.id,
+    });
+
+    ack(
+      Array.from(store[room.id].conferenceMembers)
+      ?.filter(member => member?.peerId !== peerId)
+    )
+    
+    this.socket.broadcast.to(room.id).emit(
+      "new-peer-connected", Array.from(store[room.id].conferenceMembers)
+    );
   }
 
   private createRoom(roomId: string) {
@@ -75,8 +90,15 @@ class SocketEvents {
     return Object.values(store)?.find(room => Array.from(room?.connections)?.some(user => user.socketId === socketId));
   }
 
-  private deleteRoom(roomId: string) {
-    delete store[roomId];
+  private removeUserFromRoom(roomId: string){
+    const newConnectionList = Array.from(store[roomId].connections)?.filter(user => user.socketId !== this.socket?.id);
+    if(!newConnectionList?.length) {
+        return delete store[roomId];
+    }
+
+    const newConferenceMembersList = Array.from(store[roomId].conferenceMembers)?.filter(user => user.socketId !== this.socket?.id);
+    store[roomId].connections = new Set(newConnectionList);
+    store[roomId].conferenceMembers = new Set(newConferenceMembersList);
   }
 
   private createErrorBoundary(handler: Function) {
@@ -94,6 +116,7 @@ class SocketEvents {
       "join-room": this.createErrorBoundary(this.handleJoinRoom),
       message: this.createErrorBoundary(this.handleRecieveMessage),
       disconnect: this.createErrorBoundary(this.handleSocketDisconnect),
+      'peer-connected': this.createErrorBoundary(this.handleConnectPeer)
     });
   }
 }

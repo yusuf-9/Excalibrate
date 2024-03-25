@@ -34,7 +34,7 @@ function ConferenceRoom(props: Props) {
     [participants, renderOnlyUserStream, localSocketId]
   );
 
-  return <section className={`w-full flex-grow grid grid-cols-${columns} gap-2 transition-all relative`}>
+  return <section className={`w-full flex-grow grid grid-cols-${columns} gap-2 transition-all`}>
     {userStreams}
   </section>;
 }
