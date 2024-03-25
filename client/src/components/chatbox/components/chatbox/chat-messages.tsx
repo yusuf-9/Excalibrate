@@ -1,3 +1,5 @@
+import format from "date-fns/format";
+
 // types
 import { chatboxProps } from ".";
 
@@ -19,11 +21,13 @@ const ChatMessage = ({
   content,
   name,
   userId,
+  timestamp
 }: {
   name: string;
   content: string;
   userId: string | undefined;
   socketId: string;
+  timestamp: number
 }) => (
   <div className={`flex items-start ${socketId === userId ? "justify-end" : "justify-start"}`}>
     <div
@@ -34,9 +38,14 @@ const ChatMessage = ({
       }`}
     >
       <p className={`mb-0 ${socketId === userId ? "text-contrast-dark" : "text-white"} font-medium`}>{content}</p>
-      <p className={`${socketId === userId ? "text-right text-contrast-dark" : "text-right text-white"} text-xs mt-2`}>
-        {socketId === userId ? "You" : name}
-      </p>
+      <div className="w-full flex justify-between items-center gap-5 mt-2">
+        <p className={`${socketId === userId ? "text-right text-contrast-dark" : "text-right text-white"} text-xs`}>
+          {format(new Date(timestamp), 'hh:mm a')}
+        </p>
+        <p className={`${socketId === userId ? "text-right text-contrast-dark" : "text-right text-white"} text-xs`}>
+          {socketId === userId ? "You" : name}
+        </p>
+      </div>
     </div>
   </div>
 );
