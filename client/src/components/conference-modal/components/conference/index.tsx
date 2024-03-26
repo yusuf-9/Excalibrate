@@ -1,6 +1,6 @@
 // components
-import { ConferenceActions, JoinRoom } from "./components"
-import ConferenceRoom from "@/components/conference-room"
+import { ConferenceActions, JoinRoom } from "./components";
+import ConferenceRoom from "@/components/conference-room";
 
 // hooks
 import { useConference } from "../../hooks/useConference";
@@ -13,13 +13,13 @@ type Props = {
 function ConferenceContainer(props: Props) {
   const { isModalDocked } = props;
 
-  const { participants, collaborators, socket, setParticipants, handleConnectPeer } = useConference();
+  const { participants, collaborators, socket, setParticipants, handleInitializePeer, handleEndCall } = useConference();
 
   const shouldRenderActions = participants?.length && !isModalDocked;
 
   return (
     <main className="flex flex-col h-full gap-5">
-      {!participants?.length && <JoinRoom onClick={handleConnectPeer} />}
+      {!participants?.length && <JoinRoom onClick={handleInitializePeer} />}
       {!!participants?.length && (
         <ConferenceRoom
           participants={participants}
@@ -28,7 +28,9 @@ function ConferenceContainer(props: Props) {
           localSocketId={socket?.id}
         />
       )}
-      {!!shouldRenderActions && <ConferenceActions />}
+      {!!shouldRenderActions && <ConferenceActions 
+        onEnd={handleEndCall}
+      />}
     </main>
   );
 }

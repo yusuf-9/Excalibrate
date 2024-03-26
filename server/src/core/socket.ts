@@ -96,9 +96,23 @@ class SocketEvents {
         return delete store[roomId];
     }
 
-    const newConferenceMembersList = Array.from(store[roomId].conferenceMembers)?.filter(user => user.socketId !== this.socket?.id);
     store[roomId].connections = new Set(newConnectionList);
+    this.removeUserFromConference(roomId)
+  }
+
+  private removeUserFromConference(roomId: string){
+    const newConferenceMembersList = Array.from(store[roomId].conferenceMembers)?.filter(user => user.socketId !== this.socket?.id);
     store[roomId].conferenceMembers = new Set(newConferenceMembersList);
+  }
+
+  private destroyPeer(peerId: string){
+    const userRoom = this.getUserRoom(this.socket.id);
+    if (!userRoom || !store[userRoom?.id]) return;
+    
+    this.removeUserFromConference(userRoom.id);
+    this.socket.broadcast.to(userRoom.id).emit(
+      "peer-disconnected", peerId
+      );
   }
 
   private createErrorBoundary(handler: Function) {
@@ -116,7 +130,8 @@ class SocketEvents {
       "join-room": this.createErrorBoundary(this.handleJoinRoom),
       message: this.createErrorBoundary(this.handleRecieveMessage),
       disconnect: this.createErrorBoundary(this.handleSocketDisconnect),
-      'peer-connected': this.createErrorBoundary(this.handleConnectPeer)
+      'peer-connected': this.createErrorBoundary(this.handleConnectPeer),
+      'destroy-peer': this.createErrorBoundary(this.destroyPeer)
     });
   }
 }

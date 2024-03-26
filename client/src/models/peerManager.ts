@@ -31,6 +31,8 @@ class PeerManager {
       this.callPeers(remotePeerConnections, setParticipants);
       this.listenToCalls(setParticipants);
       this.catchErrors();
+      this.handleDisconnections();
+      this.handleClose(socket);
     });
   }
 
@@ -80,10 +82,30 @@ class PeerManager {
     });
   }
 
+  private handleClose(socket: Socket){
+    this.peerInstance.on("close", () => {
+      this.endSession(socket);
+    });
+    this.peerInstance.on('error', () => {
+      this.endSession(socket)
+    });
+  }
+
+  private handleDisconnections(){
+    this.peerInstance.on("disconnected", () => {
+      this.peerInstance.reconnect();
+    });
+  }
+
   private catchErrors() {
     this.peerInstance.on("error", err => {
       console.error("PeerJS error:", err);
     });
+  }
+
+  endSession(socket: Socket) {
+    socket.emit('destroy-peer', this.peerInstance.id);
+    this.peerInstance.destroy();
   }
 }
 
