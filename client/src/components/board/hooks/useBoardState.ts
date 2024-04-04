@@ -4,6 +4,7 @@ import { useRecoilValue } from "recoil";
 // hooks
 import { useStore } from "@/hooks/useStore";
 import { useUser } from "@/hooks/useUser";
+import { useSocket } from "@/hooks/useSocket";
 
 // types
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types/types";
@@ -13,6 +14,8 @@ export const useBoardState = () => {
   const activeTheme = useRecoilValue(themeAtom);
 
   const { collaborators } = useUser();
+  const {socket} = useSocket()
+
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
 
 
@@ -20,6 +23,7 @@ export const useBoardState = () => {
     activeTheme,
     collaborators,
     excalidrawAPI,
+    socket,
     setExcalidrawAPI,
   }
 };

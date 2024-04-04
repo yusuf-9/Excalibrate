@@ -10,11 +10,12 @@ type Props = {
   name: string;
   stream: MediaStream;
   streamType: "audio" | "video";
-  isLocalStream: boolean
+  isLocalStream: boolean;
+  muted: boolean
 };
 
 function StreamPlayer(props: Props) {
-  const { color, name, stream, streamType, isLocalStream } = props;
+  const { color, name, stream, streamType, isLocalStream, muted } = props;
 
   const avatarName = name?.split(' ')?.[0]?.[0] + (name?.split(' ')?.[1]?.[0] || '')
 
@@ -26,6 +27,7 @@ function StreamPlayer(props: Props) {
           name={avatarName}
           stream={stream}
           outputAudio={!isLocalStream}
+          muted={muted}
         />
       )}
       {streamType === "video" && (

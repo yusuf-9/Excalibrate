@@ -6,12 +6,16 @@ import { useThrottledCallback } from "@/hooks/useThrottle";
 // models
 import Microphone from "@/models/microphone";
 
+// icons
+import { PiMicrophoneSlashFill } from "react-icons/pi";
+
 // types
 type Props = {
   color: string;
   name: string;
   stream: MediaStream;
   outputAudio: boolean;
+  muted: boolean
 };
 
 // constants
@@ -19,7 +23,7 @@ const AVATAR_WIDTH = 128;
 const AVATAR_HEIGHT = 128;
 
 function AudioPlayer(props: Props) {
-  const { color, name, stream, outputAudio } = props;
+  const { color, name, stream, outputAudio, muted } = props;
 
   const pulsatorEl = useRef<HTMLDivElement>(null);
   const audioOutputEl = useRef<HTMLAudioElement>(null);
@@ -69,6 +73,11 @@ function AudioPlayer(props: Props) {
       >
         <h3 className="text-[60px] pb-2 uppercase">{name}</h3>
       </div>
+      {muted && (
+        <div className="absolute right-3 top-2 p-2 rounded-full bg-gray-700">
+      <PiMicrophoneSlashFill className="h-5 w-5 "/>
+        </div>
+    )}
     </>
   );
 }

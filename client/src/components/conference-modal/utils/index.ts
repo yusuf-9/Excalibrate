@@ -14,8 +14,13 @@ export const getNewPeers = (peers: any, participants: any, collaborators: any) =
       name: collaborators?.find((collaborator: any) => collaborator?.socketId === peer.socketId)?.name,
       stream: null,
       streamType: "audio",
+      muted: false
     });
 
     return acc;
   }, []);
 };
+
+export const getParticipant = (participants: Participant[], socketId: string | undefined) => {
+  return participants.find(participant => participant.socketId === socketId);
+}

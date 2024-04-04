@@ -24,11 +24,12 @@ function ConferenceRoom(props: Props) {
       participants?.slice(0, renderOnlyUserStream ? 1 : participants?.length)?.map((participant, index) => (
         <StreamPlayer
           color={COLOR_MAP[index]}
-          stream={participant?.stream}
+          stream={participant.stream!}
           name={participant?.name}
           key={participant?.socketId}
           streamType={participant?.streamType}
           isLocalStream={participant?.socketId === localSocketId}
+          muted={participant?.muted}
         />
       )),
     [participants, renderOnlyUserStream, localSocketId]

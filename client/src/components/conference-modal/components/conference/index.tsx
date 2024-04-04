@@ -13,7 +13,16 @@ type Props = {
 function ConferenceContainer(props: Props) {
   const { isModalDocked } = props;
 
-  const { participants, collaborators, socket, setParticipants, handleInitializePeer, handleEndCall } = useConference();
+  const {
+    participants,
+    collaborators,
+    socket,
+    muted,
+    setParticipants,
+    handleInitializePeer,
+    handleEndCall,
+    handleMuteToggle,
+  } = useConference();
 
   const shouldRenderActions = participants?.length && !isModalDocked;
 
@@ -28,9 +37,13 @@ function ConferenceContainer(props: Props) {
           localSocketId={socket?.id}
         />
       )}
-      {!!shouldRenderActions && <ConferenceActions 
-        onEnd={handleEndCall}
-      />}
+      {!!shouldRenderActions && (
+        <ConferenceActions
+          muted={muted}
+          onMute={handleMuteToggle}
+          onEnd={handleEndCall}
+        />
+      )}
     </main>
   );
 }

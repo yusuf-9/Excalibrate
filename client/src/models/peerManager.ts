@@ -56,6 +56,7 @@ class PeerManager {
           {
             ...peer,
             stream: remoteStream,
+            muted: !remoteStream.getTracks()[0].enabled
           },
         ]);
       });
@@ -73,6 +74,7 @@ class PeerManager {
               return {
                 ...participant,
                 stream: remoteStream,
+                muted: !remoteStream.getTracks()[0].enabled
               };
             }
             return participant;
@@ -80,6 +82,10 @@ class PeerManager {
         });
       });
     });
+  }
+
+  handleMuteStream(muted: boolean) {
+    this.localStream.getAudioTracks()[0].enabled = muted;
   }
 
   private handleClose(socket: Socket){

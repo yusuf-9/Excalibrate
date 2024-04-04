@@ -105,6 +105,25 @@ class SocketEvents {
     store[roomId].conferenceMembers = new Set(newConferenceMembersList);
   }
 
+  private handlePeerMute(data: { muted:boolean, peerId: string }){
+    const room = this.getUserRoom(this.socket?.id);
+    if (!room) return;
+    
+    this.socket.broadcast.to(room.id).emit(
+      "remote-peer-mute", data
+    );
+  }
+
+  private handleBoardChange(data: any[]){
+    const room = this.getUserRoom(this.socket?.id);
+    if (!room) return;
+    
+    console.log('data recieved', data)
+    this.socket.broadcast.to(room.id).emit(
+      "board-change", data
+    );
+  }
+
   private destroyPeer(peerId: string){
     const userRoom = this.getUserRoom(this.socket.id);
     if (!userRoom || !store[userRoom?.id]) return;
@@ -131,7 +150,9 @@ class SocketEvents {
       message: this.createErrorBoundary(this.handleRecieveMessage),
       disconnect: this.createErrorBoundary(this.handleSocketDisconnect),
       'peer-connected': this.createErrorBoundary(this.handleConnectPeer),
-      'destroy-peer': this.createErrorBoundary(this.destroyPeer)
+      'destroy-peer': this.createErrorBoundary(this.destroyPeer),
+      'peer-mute': this.createErrorBoundary(this.handlePeerMute),
+      'board-update': this.createErrorBoundary(this.handleBoardChange)
     });
   }
 }
