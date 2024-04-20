@@ -1,5 +1,6 @@
 import express from "express";
 import http from "http";
+import path from "path";
 import { Server as SocketIOServer } from "socket.io";
 
 class SocketServer {
@@ -9,6 +10,12 @@ class SocketServer {
 
   constructor(port: string | number, originURI: string) {
     this.app = express();
+    this.app.use(express.static(path.join(__dirname, "../../public")));
+
+    this.app.get("*", function (request, response) {
+      response.sendFile(path.join(__dirname, "../../public/index.html"));
+    });
+
     this.server = http.createServer(this.app);
     this.io = new SocketIOServer(this.server, {
       cors: {
