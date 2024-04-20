@@ -11,7 +11,7 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
     const [socket, setSocket] = useState<Socket | null>(null);
 
     useEffect(() => {
-        const socketInstance = socketIO('http://localhost:3000');
+        const socketInstance = socketIO('https://excalibrate.onrender.com/');
 
         socketInstance.on('connect', () => {
             console.log('Connected to Socket.io server');
