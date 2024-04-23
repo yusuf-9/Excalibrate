@@ -98,7 +98,6 @@ export const useConference = () => {
   );
 
   const handleRemotePeerMute = useCallback(({ peerId, muted }: { peerId: string; muted: boolean }) => {
-    console.log({peerId, muted})
     setParticipants(participants =>
       participants?.map(participant => {
         if (participant.peerId === peerId) {

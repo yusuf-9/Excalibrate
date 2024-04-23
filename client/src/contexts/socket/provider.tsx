@@ -14,11 +14,10 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
         const socketInstance = socketIO('https://excalibrate.onrender.com/');
 
         socketInstance.on('connect', () => {
-            console.log('Connected to Socket.io server');
             setSocket(socketInstance);
         });
         socketInstance.on('disconnect', () => {
-            console.log('Disconnected from Socket.io server');
+            socket.emit('user-disconnected')
         });
 
         return () => {

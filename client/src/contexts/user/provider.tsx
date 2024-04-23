@@ -28,8 +28,19 @@ const UserProvider = ({ children }: UserProviderProps) => {
   // Socket
   const { socket } = useSocket();
 
-  useEffect(() => {
-    socket?.on("joined-room", ([users, newRoomId]: [UserType[], string]) => {
+  // event handlers
+  const handleDisconnectUser = useCallback(() => {
+    socket.emit('user-disconnected')
+  }, [socket]);
+
+  const handleUserDisconnection = useCallback((socketId: string) => {
+    setCollaboraters((prev) => {
+      return prev.filter((user) => user.socketId!== socketId);
+    })
+  }, [setCollaboraters]);
+
+
+  const handleUserJoinRoomEvent = useCallback(([users, newRoomId]: [UserType[], string]) => {
       users?.forEach(connectedUser => {
         if (connectedUser?.socketId === socket?.id) {
           if (!user) setUser(connectedUser);
@@ -40,27 +51,41 @@ const UserProvider = ({ children }: UserProviderProps) => {
         setRoomId(newRoomId);
         navigate(`/${newRoomId}`);
       }
-    });
+    }, [navigate, roomId, setCollaboraters, setUser, socket?.id, user])
 
-    socket?.on("chat-history", (data: messageType[]) => {
-      console.log("recieved chat history", data);
-      localStorage.setItem("chat-history", JSON.stringify(data));
-    });
-
-    // Clean up the socket connection on component unmount
-    return () => {
-      socket?.off("joined-room");
-      socket?.off("chat-history");
-    };
-  }, [navigate, roomId, setCollaboraters, setUser, socket, user]);
+    const handleRecieveChatHistoryEvent = useCallback((data: messageType[]) => {
+        localStorage.setItem("chat-history", JSON.stringify(data));
+    }, [])
 
   const handleJoinRoom = useCallback(
     (data: { name: string; roomId?: string }) => {
-      console.log("joining room");
       socket?.emit("join-room", data);
     },
     [socket]
   );
+
+  // effect for listening to socket events
+  useEffect(() => {
+    socket?.on("joined-room", handleUserJoinRoomEvent);
+    socket?.on("chat-history", handleRecieveChatHistoryEvent);
+    socket?.on("user-disconnected", handleUserDisconnection);
+
+    // Clean up the socket connection on component unmount
+    return () => {
+      socket?.off("joined-room", handleUserJoinRoomEvent);
+      socket?.off("chat-history", handleRecieveChatHistoryEvent);
+      socket?.off("user-disconnected", handleUserDisconnection);
+    };
+  }, [handleRecieveChatHistoryEvent, handleUserDisconnection, handleUserJoinRoomEvent, socket]);
+
+  // effect for emitting user leave event
+    useEffect(() => {
+    window.addEventListener("beforeunload", handleDisconnectUser);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleDisconnectUser);
+    };
+  }, [handleDisconnectUser]);
 
   return (
     <UserContext.Provider value={{ user, collaborators: collaboraters, handleJoinRoom }}>
