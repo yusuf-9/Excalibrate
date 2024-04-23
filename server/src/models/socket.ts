@@ -13,8 +13,6 @@ class SocketEventListener {
 
   private bindDefaultEvents(): void {
     this.socket.on("connection", (socketConnection: Socket) => {
-      console.log("a user connected", socketConnection?.id);
-      
       const socketEvents = new SocketEvents(this.socket, socketConnection);
       socketEvents?.getEvents()?.forEach(([key, handler]: [string, (args?: any) => void]) => socketConnection?.on(key, handler));
     });

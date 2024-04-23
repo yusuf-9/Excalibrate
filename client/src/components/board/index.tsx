@@ -22,11 +22,13 @@ const BoardContainer = () => {
   } = useBoardState();
 
   const {
-    handleChange
+    handleChange,
+    handleEmitPointerState
   } = useBoardUpdates({
     excalidrawAPI,
     activeTheme,
-    socket
+    socket,
+    collaborators
   });
 
   // Function to render the top right UI
@@ -57,7 +59,7 @@ const BoardContainer = () => {
         renderTopRightUI={getTopRightUI}
         excalidrawAPI={setExcalidrawAPI}
         onChange={handleChange}
-        
+        onPointerUpdate={handleEmitPointerState}
       />
     </main>
   );

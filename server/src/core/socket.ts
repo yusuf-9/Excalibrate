@@ -118,7 +118,6 @@ class SocketEvents {
     const room = this.getUserRoom(this.socket?.id);
     if (!room) return;
     
-    console.log('data recieved', data)
     this.socket.broadcast.to(room.id).emit(
       "board-change", data
     );
@@ -131,7 +130,26 @@ class SocketEvents {
     this.removeUserFromConference(userRoom.id);
     this.socket.broadcast.to(userRoom.id).emit(
       "peer-disconnected", peerId
-      );
+    );
+  }
+
+  private handleUserDisconnection(){
+    const userRoom = this.getUserRoom(this.socket.id);
+    if (!userRoom || !store[userRoom?.id]) return;
+
+
+    this.socket.broadcast.to(userRoom.id).emit(
+      "user-disconnected", this.socket.id
+    );
+  }
+
+  private handlePointerUpdate(pointer: {x: number, y: number}) {
+    const userRoom = this.getUserRoom(this.socket.id);
+    if (!userRoom || !store[userRoom?.id]) return;
+
+    this.socket.broadcast.to(userRoom.id).emit(
+      "pointer-update", {pointer, socketId: this.socket.id}
+    );
   }
 
   private createErrorBoundary(handler: Function) {
@@ -152,7 +170,9 @@ class SocketEvents {
       'peer-connected': this.createErrorBoundary(this.handleConnectPeer),
       'destroy-peer': this.createErrorBoundary(this.destroyPeer),
       'peer-mute': this.createErrorBoundary(this.handlePeerMute),
-      'board-update': this.createErrorBoundary(this.handleBoardChange)
+      'board-update': this.createErrorBoundary(this.handleBoardChange),
+      'user-disconnected': this.createErrorBoundary(this.handleUserDisconnection),
+      'pointer-update': this.createErrorBoundary(this.handlePointerUpdate)
     });
   }
 }

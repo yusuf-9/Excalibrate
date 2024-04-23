@@ -14,11 +14,10 @@ const SocketProvider = ({ children }: SocketProviderProps) => {
         const socketInstance = socketIO('http://localhost:3000');
 
         socketInstance.on('connect', () => {
-            console.log('Connected to Socket.io server');
             setSocket(socketInstance);
         });
         socketInstance.on('disconnect', () => {
-            console.log('Disconnected from Socket.io server');
+            socket.emit('user-disconnected')
         });
 
         return () => {
