@@ -14,14 +14,13 @@ Excalibrate is a collaborative whiteboard with live audio, video, and textual ch
 
 ## Features
 
-- Collaborative whiteboard functionality.
+- Reliable, secure and quick collaborative sketching.
 - Live audio, video, and textual chat.
-- Quickly sketch collaborative diagrams.
 - Mesh architecture for peer-to-peer connections.
 
 ## Dependencies
 - The project uses WebSockets, WebRTC, and Excalidraw.
-- It also uses "Peerjs" for hadnling WebRTC connections (planned refactor to native WebRTC API).
+- It also uses "Peerjs" for handling WebRTC connections (planned refactor to native WebRTC API).
 
 ## Development Status
 
